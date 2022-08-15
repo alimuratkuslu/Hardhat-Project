@@ -3,15 +3,17 @@ import { Breadcrumb, Layout, Menu, Row, Input, Col, Button, notification, messag
 import { useState } from 'react';
 import {ethers} from 'ethers';
 import { TEST_ABI, TEST_ADDRESS } from './constants/Test1';
-import { Link, Route, BrowserRouter as Router, useNavigate } from 'react-router-dom';
-import DepositETH from './components/depositETH.js';
+import { Link, Route, BrowserRouter as Router, useNavigate, Routes } from 'react-router-dom';
+import DepositETH from './components/depositETH';
+import CreateUser from './components/createUser';
+import MainPage from './components/mainPage';
 import './App.css';
+import { Header } from 'antd/lib/layout/layout';
 
 
 function App() {
 
   const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
   const [address, setAddress] = useState("");
   const [amount, setAmount] = useState("");
   const [releaseTime, setReleaseTime] = useState("");
@@ -49,54 +51,14 @@ function App() {
     setDefaultAccount(newAccount);
   } 
 
-  const connectWallet = () => {
-    //@ts-ignore
-    if(window.ethereum){
-      //@ts-ignore
-      window.ethereum.request({method: 'eth_requestAccounts'}).then(result => {
-        accountChangedHandler(result[0]);
-        setConnectButtonText('Wallet Connected');
-        notification['info']({
-          message: 'You are connected'
-        });
-      })
-    }
-    else{
-      notification['error']({
-        message: 'You need to install Metamask'
-      });
-      return;
-    }
-  }
-
   return (
     <Router>
       <div className='App'>
-      <Button type="primary" onClick={connectWallet}>{connectButtonText}</Button>
-      <Row style={{ margin: "10px" }}>
-        <Col md={12}>
-            <Input placeholder="Wallet Address" onChange={(e: any) => setAddress(e.target.value)} />
-          </Col>
-      </Row>
-
-      <Row style={{ margin: "10px" }}>
-        <Col md={24}>
-        <Input placeholder="Name" onChange={(e: any) => setName(e.target.value)}/>
-      </Col>
-      </Row>
-
-      <Row style={{ margin: "10px" }}>
-        <Col md={24}>
-        <Input placeholder="Amount in ETH" onChange={(e: any) => setAmount(e.target.value)}/>
-      </Col>
-      </Row>
-
-      <Row style={{ margin: "10px" }}>
-        <Col md={24}>
-        <Input placeholder="Release Time" onChange={(e: any) => setReleaseTime(e.target.value)}/>
-      </Col>
-      </Row>
-      <Button type="primary" onClick={createUser}> Create User ! </Button>
+      <Routes>
+        <Route path='/' element={<MainPage/>}></Route>
+        <Route path='/transfer' element={<DepositETH/>}></Route>
+        <Route path='/createUser' element={<CreateUser/>}></Route>
+      </Routes>
       </div>
     </Router>
   );
